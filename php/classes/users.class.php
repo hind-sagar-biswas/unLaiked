@@ -5,7 +5,7 @@ class User extends Dbh
 
     protected function createUserTable()
     {
-        $sql = "CREATE TABLE `$this->userTable` (
+        $sql = "CREATE TABLE IF NOT EXISTS `$this->userTable` (
                     `id` INT(11) NOT NULL AUTO_INCREMENT , 
                     `username` VARCHAR(225)                             NOT NULL , 
                     `email`    VARCHAR(225)                             NOT NULL , 

@@ -55,4 +55,8 @@ if ($_SERVER['SCRIPT_NAME'] == '/config.php') redirect_to('/');
 require $CLASS . 'contr.class.php';
 require $CLASS . 'dbh.class.php';
 require $CLASS . 'users.class.php';
+require $CLASS . 'post.class.php';
+require $CLASS . 'unlaik.class.php';
 
+// INITIATE classes
+$unlaike = new Unlaik();

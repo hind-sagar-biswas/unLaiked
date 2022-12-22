@@ -6,7 +6,7 @@ class Dbh extends Contr
     protected $userTable = 'users';
     protected $postTable = 'posts';
     protected $reactionTable = 'reactions';
-    
+
     private $host = "localhost";
     private $user = "root";
     private $pass = "";
@@ -58,5 +58,12 @@ class Dbh extends Contr
             print "ERROR!: " . $e->getMessage() . "<BR>";
             die();
         }
+    }
+
+    public function check_table_exists(string $tableName)
+    {
+        // if ($this->conn()->query("SELECT 1 FROM `$tableName` LIMIT 1") !== False) return True;
+        // return False;
+        var_dump($this->conn()->query("SHOW TABLES IN `$tableName`"));
     }
 }
