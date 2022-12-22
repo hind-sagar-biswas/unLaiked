@@ -2,11 +2,10 @@
 
 class User extends Dbh
 {
-    protected $userTable = 'users';
 
     protected function createUserTable()
     {
-        $sql = "CREATE TABLE $this->userTable (
+        $sql = "CREATE TABLE `$this->userTable` (
                     `id` INT(11) NOT NULL AUTO_INCREMENT , 
                     `username` VARCHAR(225)                             NOT NULL , 
                     `email`    VARCHAR(225)                             NOT NULL , 
