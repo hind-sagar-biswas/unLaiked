@@ -6,7 +6,6 @@ class Dbh extends Contr
     protected $userTable = 'users';
     protected $postTable = 'posts';
     protected $reactionTable = 'reactions';
-    protected $reactionSetTable = 'post_user_reaction';
 
     private $host = "localhost";
     private $user = "root";

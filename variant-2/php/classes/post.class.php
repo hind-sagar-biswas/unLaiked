@@ -13,9 +13,9 @@ class Post extends User
                     `update_time` DATETIME on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
                         PRIMARY KEY (`id`)) 
                             ENGINE=InnoDB;
-                ALTER TABLE `$this->postTable`,
-                    ADD CONSTRAINT `f_user_id`     FOREIGN KEY (`user_id`)     
-                        REFERENCES `$this->userTable` (`id`)     ON DELETE CASCADE ON UPDATE NO ACTION;";
+                ALTER TABLE `$this->postTable` 
+                    ADD CONSTRAINT `USER_POST_KEY` FOREIGN KEY (`user_id`) 
+                        REFERENCES `$this->userTable`(`id`) ON DELETE CASCADE ON UPDATE NO ACTION;";
 
         if ($this->conn()->query($sql) == TRUE) return True;
         return False;
@@ -24,22 +24,24 @@ class Post extends User
     protected function get_post_column_by_id(string $column, int $postId)
     {
         $conn = $this->conn();
-        $sql = "SELECT `$column` FROM `$this->postTable` WHERE id = `$postId`";
+        $sql = "SELECT `$column` FROM `$this->postTable` WHERE id = '$postId'";
         $result = mysqli_fetch_assoc(mysqli_query($conn, $sql));
         $conn->close();
         return $result;
     }
 
-    protected function add_new_post()
+    public function add_new_post($userId, $post)
     {
-        $conn = $this->conn();
-        $sql = "";
+        $sql = "INSERT INTO `$this->postTable`(user_id, post) VALUES('$userId', '$post');";
+        if($this->DEBUG) echo $sql;
+        if ($this->conn()->query($sql)) return True;
+        return False;
     }
 
     protected function get_post_by_id(int $post_id)
     {
         $conn = $this->conn();
-        $sql = "SELECT * FROM $this->postTable AS post WHERE post.id = `$post_id`";
+        $sql = "SELECT * FROM $this->postTable AS post WHERE id = '$post_id'";
         $result = mysqli_fetch_assoc(mysqli_query($conn, $sql));
         $conn->close();
         return $result;
@@ -48,7 +50,9 @@ class Post extends User
     public function get_all_posts(int $limit = 5): array
     {
         $conn = $this->conn();
-        $sql = "SELECT * FROM $this->postTable LIMIT $limit";
+        $sql = "SELECT p.id, p.user_id, p.post, u.username FROM $this->postTable AS p 
+                    LEFT JOIN $this->userTable AS u
+                        ON p.user_id = u.id LIMIT $limit";
 
         $result = [];
 

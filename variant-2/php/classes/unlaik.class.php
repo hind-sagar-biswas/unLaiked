@@ -2,6 +2,11 @@
 
 class Unlaik extends Post
 {
+    public function __construct(bool $DEBUG = False)
+    {
+        $this->DEBUG = $DEBUG;
+    }
+
     protected function createReactionTable()
     {
         $sql = "CREATE TABLE IF NOT EXISTS `$this->reactionTable` (
@@ -29,11 +34,11 @@ class Unlaik extends Post
         return [True, 'Initialization Successful!'];
     }
 
-    protected function get_post_react(int $postId): array|false|null
+    public function get_post_react(int $postId): array|false|null
     {
         $conn = $this->conn();
-        $sqlLike = "SELECT post_id FROM `$this->reactionTable` WHERE post_id = `$postId` && reaction = `like`";
-        $sqlDislike = "SELECT post_id FROM `$this->reactionTable` WHERE post_id = `$postId` && reaction = `dislike`";
+        $sqlLike = "SELECT post_id FROM `$this->reactionTable` WHERE post_id = '$postId' && reaction = 'like'";
+        $sqlDislike = "SELECT post_id FROM `$this->reactionTable` WHERE post_id = '$postId' && reaction = 'dislike'";
 
         $queriedResult = [mysqli_query($conn, $sqlLike), mysqli_query($conn, $sqlDislike)];
         $reactionCount = ["likes" => mysqli_num_rows($queriedResult[0]), "dislikes" =>  mysqli_num_rows($queriedResult[1])];
@@ -45,24 +50,11 @@ class Unlaik extends Post
     public function get_user_react(int $postId, int $userId): false|array|null
     {
         $conn = $this->conn();
-        $sql = "SELECT reaction FROM `$this->reactionTable` WHERE post_id = `$postId` && user_id = `$userId`";
+        $sql = "SELECT reaction FROM `$this->reactionTable` WHERE post_id = '$postId' && user_id = '$userId'";
         $query = mysqli_query($conn, $sql);
 
         $reaction = (mysqli_num_rows($query) != 1) ? false : mysqli_fetch_assoc($query);
         return $reaction;
-    }
-
-    protected function set_reaction($reactionId, $reaction): bool
-    {
-        $conn = $this->conn();
-
-        $reaction = json_encode($reaction);
-        $sql = "UPDATE $this->reactionTable SET reaction='$reaction' WHERE id='$reactionId'";
-        $query = mysqli_query($conn, $sql);
-        $conn->close();
-
-        if ($query)  return True;
-        return False;
     }
 
     protected function remove_reaction(int $postId, int $userId): bool
@@ -72,14 +64,14 @@ class Unlaik extends Post
         return False;
     }
 
-    protected function alter_react(int $postId, int $userId, string $react = 'like'): bool
+    public function alter_react(int $postId, int $userId, string $react = 'like'): bool
     {
-        if ($react != 'like' || $react != 'dislike') return False;
+        if ($react != 'like' && $react != 'dislike') return False;
 
         $currentReaction = $this->get_user_react($postId, $userId);
 
         if ($currentReaction === false) $sql = "INSERT INTO `$this->reactionTable`(post_id, user_id, reaction) VALUES('$postId', '$userId', '$react');";
-        else if ($currentReaction != $react) $sql = "UPDATE $this->reactionTable SET reaction='$react' WHERE post_id='$postId' && user_id = '$userId';";
+        else if ($currentReaction['reaction'] != $react) $sql = "UPDATE $this->reactionTable SET reaction='$react' WHERE post_id='$postId' && user_id = '$userId';";
         else return $this->remove_reaction($postId, $userId);
 
         if($this->conn()->query($sql)) return True;

@@ -59,4 +59,4 @@ require $CLASS . 'post.class.php';
 require $CLASS . 'unlaik.class.php';
 
 // INITIATE classes
-$unlaik = new Unlaik();
+$unlaik = new Unlaik($DEBUG);
