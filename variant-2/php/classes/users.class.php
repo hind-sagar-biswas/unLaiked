@@ -14,7 +14,7 @@ class User extends Dbh
                     `update_time` DATETIME  on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
                         PRIMARY KEY (`id`), 
                         UNIQUE `username` (`username`), 
-                        UNIQUE `EMAIL` (`email`)) 
+                        UNIQUE `EMAIL` (`email`))
                             ENGINE = InnoDB;";
 
         if ($this->conn()->query($sql) == TRUE) return True;
@@ -71,6 +71,8 @@ class User extends Dbh
         $sql = "INSERT INTO $this->userTable (username, email, password) VALUES('$username', '$email', '$hashed_password')";
         $getLastEntrySql = "SELECT * FROM $this->userTable ORDER BY id DESC LIMIT 1";
         if($this->conn()->query($sql)) return mysqli_fetch_assoc(mysqli_query($conn, $getLastEntrySql));
+        $conn->close();
+        
         return False;
     }
 

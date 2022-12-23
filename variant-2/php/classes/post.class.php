@@ -9,15 +9,11 @@ class Post extends User
                     `id`          INT(11)                              NOT NULL AUTO_INCREMENT , 
                     `user_id`     INT(11)                              NOT NULL , 
                     `post`        VARCHAR(225)                         NOT NULL , 
-                    `reaction_id` INT(11)                              NOT NULL , 
                     `create_time` DATETIME                             NOT NULL DEFAULT CURRENT_TIMESTAMP , 
                     `update_time` DATETIME on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
-                        PRIMARY KEY (`id`), 
-                        UNIQUE `REACTIONS` (`reaction_id`)) 
+                        PRIMARY KEY (`id`)) 
                             ENGINE=InnoDB;
-                ALTER TABLE `$this->postTable`
-                    ADD CONSTRAINT `f_reaction_id` FOREIGN KEY (`reaction_id`) 
-                        REFERENCES `$this->reactionTable` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+                ALTER TABLE `$this->postTable`,
                     ADD CONSTRAINT `f_user_id`     FOREIGN KEY (`user_id`)     
                         REFERENCES `$this->userTable` (`id`)     ON DELETE CASCADE ON UPDATE NO ACTION;";
 
