@@ -1,6 +1,11 @@
 <?php
 session_start();
 
+// META DATA
+$VERSION = "v1.1";
+$AUTHOR = "Hind Sagar Biswas";
+$YEAR = "2022";
+
 // DEBUG mode
 $DEBUG = True;
 $DEEP_DEBUG = False;
@@ -60,3 +65,9 @@ require $CLASS . 'unlaik.class.php';
 
 // INITIATE classes
 $unlaik = new Unlaik($DEBUG);
+
+// SCRIPTS & STYLESHEETS
+$STYLESHEETS = [
+    "style"
+];
+$SCRIPTS = [];

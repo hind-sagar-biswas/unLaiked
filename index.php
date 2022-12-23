@@ -1,10 +1,6 @@
 <?php
 require './config.php';
 
-$STYLESHEETS = [
-    "style"
-];
-
 // HEADER
 require $HTML . 'header.php';
 
