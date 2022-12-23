@@ -65,7 +65,7 @@ class User extends Dbh
         return $result;
     }
 
-    protected function add_new_user($username, $email, $hashed_password)
+    public function add_new_user($username, $email, $hashed_password)
     {
         $conn = $this->conn();
         $sql = "INSERT INTO $this->userTable (username, email, password) VALUES('$username', '$email', '$hashed_password')";

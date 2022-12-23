@@ -49,7 +49,7 @@ class Post extends User
         return $result;
     }
 
-    protected function get_all_posts(int $limit = 5): array
+    public function get_all_posts(int $limit = 5): array
     {
         $conn = $this->conn();
         $sql = "SELECT * FROM $this->postTable LIMIT $limit";

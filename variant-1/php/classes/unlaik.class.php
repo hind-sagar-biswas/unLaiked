@@ -34,24 +34,45 @@ class Unlaik extends Post
         return $result;
     }
 
-    protected function get_user_react(int $reactionId, int $userId)
+    public function get_user_react(int $reactionId, int $userId)
     {
         $reaction = json_decode($this->get_post_react($reactionId), true);
 
         $likes = $reaction['likes'];
         $dislikes = $reaction['dislikes'];
 
-        if(in_array($userId, $likes)) return 'liked';
-        if(in_array($userId, $dislikes)) return 'disliked';
-        return 'UnReacted';
+        if (in_array($userId, $likes)) return 'liked';
+        if (in_array($userId, $dislikes)) return 'disliked';
+        return 'unreacted';
     }
 
-    protected function add_like(int $rectionId, int $userId)
+    protected function set_reaction($reactionId, $reaction): bool
     {
+        $conn = $this->conn();
+
+        $reaction = json_encode($reaction);
+        $sql = "UPDATE $this->reactionTable SET reaction='$reaction' WHERE id='$reactionId'";
+        $query = mysqli_query($conn, $sql);
+        $conn->close();
+
+        if ($query)  return True;
+        return False;
+    }
     
-    }
-
-    protected function alter_react(int $userId, string $reaction = 'like')
+    protected function alter_react(int $reactionId, int $userId, string $react = 'like')
     {
+        $reaction = json_decode($this->get_post_react($reactionId), true);
+        $likes = $reaction['likes'];
+        $dislikes = $reaction['dislikes'];
+
+        $currentReaction = $this->get_user_react($reactionId, $userId);
+        if($currentReaction = 'unreacted') {
+            if ($react == 'like') array_push($reaction['likes'], $userId);
+            else if ($react == 'dislike') array_push($reaction['dislikes'], $userId);
+        }
+        else if ($react == 'dislike' && $currentReaction == "disliked") array_splice($reaction['dislikes'], array_search($userId, $dislikes), 1);
+        else if($react == 'like' && $currentReaction == "liked") array_splice($reaction['likes'], array_search($userId, $likes), 1);
+
+        return $this->set_reaction($reactionId, $reaction);
     }
 }

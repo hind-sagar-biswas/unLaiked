@@ -7,6 +7,7 @@ require $HTML . 'header.php';
 // BODY
 if (isset($_GET['m'])) echo '<i>' . $_GET['m'] . '</i><br/>'; // echo out message
 
+require $FORM . 'login.php';
 require $FORM . 'addUser.php';
 require $FORM . 'post.php';
 

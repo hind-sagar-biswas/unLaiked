@@ -3,7 +3,7 @@
 <?php
 $postList = $unlaik->get_all_posts();
 foreach ($postList as $post) : 
-    $userReaction = ($_SESSION['user_id']) ? $unlaik->get_user_reaction($post['reaction_id'], $_SESSION['user_id']) : 'UnReacted' ;
+    $userReaction = (isset($_SESSION['user_id'])) ? $unlaik->get_user_reaction($post['reaction_id'], $_SESSION['user_id']) : '' ;
 ?>
     <div class="post-block">
         <h4 class="post-user">Username</h4>
