@@ -9,6 +9,8 @@ class Post extends User
                     `id`          INT(11)                              NOT NULL AUTO_INCREMENT , 
                     `user_id`     INT(11)                              NOT NULL , 
                     `post`        VARCHAR(225)                         NOT NULL , 
+                    `like_count`        INT(11)                              NOT NULL DEFAULT '0' , 
+                    `dislike_count`     INT(11)                              NOT NULL DEFAULT '0' , 
                     `create_time` DATETIME                             NOT NULL DEFAULT CURRENT_TIMESTAMP , 
                     `update_time` DATETIME on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
                         PRIMARY KEY (`id`)) 
@@ -32,6 +34,7 @@ class Post extends User
 
     public function add_new_post($userId, $post)
     {
+        $post = htmlspecialchars($post);
         $sql = "INSERT INTO `$this->postTable`(user_id, post) VALUES('$userId', '$post');";
         if($this->DEBUG) echo $sql;
         if ($this->conn()->query($sql)) return True;
@@ -50,7 +53,7 @@ class Post extends User
     public function get_all_posts(int $limit = 5): array
     {
         $conn = $this->conn();
-        $sql = "SELECT p.id, p.user_id, p.post, u.username FROM $this->postTable AS p 
+        $sql = "SELECT p.id, p.user_id, p.post, u.username, p.like_count, p.dislike_count FROM $this->postTable AS p 
                     LEFT JOIN $this->userTable AS u
                         ON p.user_id = u.id
                     ORDER BY p.id DESC

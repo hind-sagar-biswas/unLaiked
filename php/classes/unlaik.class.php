@@ -34,19 +34,6 @@ class Unlaik extends Post
         return [True, 'Initialization Successful!'];
     }
 
-    public function get_post_react(int $postId): array|false|null
-    {
-        $conn = $this->conn();
-        $sqlLike = "SELECT post_id FROM `$this->reactionTable` WHERE post_id = '$postId' && reaction = 'like'";
-        $sqlDislike = "SELECT post_id FROM `$this->reactionTable` WHERE post_id = '$postId' && reaction = 'dislike'";
-
-        $queriedResult = [mysqli_query($conn, $sqlLike), mysqli_query($conn, $sqlDislike)];
-        $reactionCount = ["likes" => mysqli_num_rows($queriedResult[0]), "dislikes" =>  mysqli_num_rows($queriedResult[1])];
-        $conn->close();
-
-        return $reactionCount;
-    } 
-
     public function get_user_react(int $postId, int $userId): false|array|null
     {
         $conn = $this->conn();
@@ -57,24 +44,43 @@ class Unlaik extends Post
         return $reaction;
     }
 
-    protected function remove_reaction(int $postId, int $userId): bool
+    protected function remove_reaction(int $postId, int $userId, string $react = 'like'): bool
     {
-        $sql = "DELETE FROM `$this->reactionTable` WHERE post_id='$postId' && user_id = '$userId'";
-        if ($this->conn()->query($sql)) return True;
-        return False;
+        if ($react != 'like' && $react != 'dislike') return False;
+        
+        $sql_stmt = [
+                "DELETE FROM `$this->reactionTable` WHERE post_id='$postId' && user_id = '$userId';",
+                "UPDATE `$this->postTable` SET $react" . "_count = $react" . "_count - 1 WHERE id = '$postId';"
+            ];
+        foreach ($sql_stmt as $sql) {
+            if (!$this->conn()->query($sql)) return False;
+        }
+        return True;
     }
 
     public function alter_react(int $postId, int $userId, string $react = 'like'): bool
     {
         if ($react != 'like' && $react != 'dislike') return False;
+        if ($react == 'like') $oppositeReact = 'dislike';
+        else  $oppositeReact = 'like';
 
         $currentReaction = $this->get_user_react($postId, $userId);
 
-        if ($currentReaction === false) $sql = "INSERT INTO `$this->reactionTable`(post_id, user_id, reaction) VALUES('$postId', '$userId', '$react');";
-        else if ($currentReaction['reaction'] != $react) $sql = "UPDATE $this->reactionTable SET reaction='$react' WHERE post_id='$postId' && user_id = '$userId';";
-        else return $this->remove_reaction($postId, $userId);
+        if ($currentReaction === false) $sql_stmt = [
+                "INSERT INTO `$this->reactionTable`(post_id, user_id, reaction) VALUES('$postId', '$userId', '$react');",
+                "UPDATE `$this->postTable` SET $react" . "_count = $react" . "_count + 1 WHERE id = '$postId';"
+            ];
+        else if ($currentReaction['reaction'] != $react) $sql_stmt = [
+                "UPDATE $this->reactionTable SET reaction='$react' WHERE post_id='$postId' && user_id = '$userId';",
+                "UPDATE $this->postTable SET $react" . "_count = $react" . "_count + 1, $oppositeReact" . "_count = $oppositeReact" . "_count - 1 WHERE id = '$postId'"
+            ];
+        else return $this->remove_reaction($postId, $userId, $react);
 
-        if($this->conn()->query($sql)) return True;
-        return False;
+        
+        foreach ($sql_stmt as $sql) {
+            if ($this->DEBUG) echo $sql;
+            if (!$this->conn()->query($sql)) return False;
+        }
+        return True;
     }
 }

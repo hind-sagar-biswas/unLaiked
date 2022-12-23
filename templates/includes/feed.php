@@ -5,7 +5,6 @@ $postList = $unlaik->get_all_posts();
 foreach ($postList as $post) :
     $userReaction = (isset($_SESSION['user_id'])) ? $unlaik->get_user_react($post['id'], $_SESSION['user_id']) : '';
     $userReaction = ($userReaction) ? $userReaction['reaction'] : '';
-    $postReactions = $unlaik->get_post_react($post['id']);
 
 ?>
     <div class="post-block">
@@ -17,14 +16,14 @@ foreach ($postList as $post) :
            href="<?= $INC . 'like.inc.php?l=1&p=' . $post['id'] ?>">
             <button>
                 <i class="fas fa-thumbs-up"></i> 
-                [<?= $postReactions['likes'] ?>]
+                [<?= $post['like_count'] ?>]
             </button>
         </a>
         <a class="<?php echo ($userReaction == 'dislike') ? $userReaction : ''; ?>" 
            href="<?= $INC . 'like.inc.php?l=0&p=' . $post['id'] ?>">
             <button>
                 <i class="fas fa-thumbs-down"></i> 
-                [<?= $postReactions['dislikes'] ?>]
+                [<?= $post['dislike_count'] ?>]
             </button>
         </a>
     </div>
