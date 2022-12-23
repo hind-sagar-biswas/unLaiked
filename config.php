@@ -3,12 +3,12 @@ session_start();
 
 // DEBUG mode
 $DEBUG = True;
-$DEEP_DEBUG = True;
+$DEEP_DEBUG = False;
 $DEBUG_MODE = 2; // 1 = cmd PHP server ; 2 = XAMPP server
 
 // BASE info
 if($DEBUG_MODE == 1) $BASE_URI = 'http://localhost:8000/';
-if($DEBUG_MODE == 2) $BASE_URI = 'http://localhost:8888/unLaiked/variant-2/';
+if($DEBUG_MODE == 2) $BASE_URI = 'http://localhost:8888/unLaiked/';
 
 $BASE_DIR = __DIR__ . '/';
 $DOC_ROOT = $_SERVER['DOCUMENT_ROOT'];

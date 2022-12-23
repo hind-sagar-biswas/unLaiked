@@ -52,7 +52,9 @@ class Post extends User
         $conn = $this->conn();
         $sql = "SELECT p.id, p.user_id, p.post, u.username FROM $this->postTable AS p 
                     LEFT JOIN $this->userTable AS u
-                        ON p.user_id = u.id LIMIT $limit";
+                        ON p.user_id = u.id
+                    ORDER BY p.id DESC
+                    LIMIT $limit";
 
         $result = [];
 

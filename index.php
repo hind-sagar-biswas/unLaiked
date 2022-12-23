@@ -1,17 +1,28 @@
 <?php
 require './config.php';
 
+$STYLESHEETS = [
+    "style"
+];
+
 // HEADER
 require $HTML . 'header.php';
 
-// BODY
-if (isset($_GET['m'])) echo '<i>' . $_GET['m'] . '</i><br/>'; // echo out message
+// BODY ?>
 
-require $FORM . 'login.php';
-require $FORM . 'addUser.php';
-require $FORM . 'post.php';
+<main>
+    <div id="feed">
+        <?php require $HTML . 'feed.php'; ?>
+    </div>
+    <div id="sidebar">
+        <?php require $FORM . 'login.php'; ?>
+        <?php require $FORM . 'addUser.php'; ?>
+        <?php require $FORM . 'post.php'; ?>
+        <?php if (isset($_GET['m'])) echo '<div id="message-box"><i>' . $_GET['m'] . '</i></div>';  ?>
+    </div>
+</main>
 
-require $HTML . 'feed.php';
 
+<?php 
 // FOOTER
 require $HTML . 'footer.php';

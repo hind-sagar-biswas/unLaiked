@@ -45,7 +45,7 @@ class Unlaik extends Post
         $conn->close();
 
         return $reactionCount;
-    }
+    } 
 
     public function get_user_react(int $postId, int $userId): false|array|null
     {
